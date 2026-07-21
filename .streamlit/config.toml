@@ -4,3 +4,6 @@ backgroundColor = '#1a1a2e'
 secondaryBackgroundColor = '#16213e'
 textColor = '#ffffff'
 font = 'sans serif'
+
+[runner]
+magicEnabled = false
