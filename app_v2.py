@@ -393,11 +393,23 @@ def generate_pdf_pattern(converter, img_2d, bom, width, h_size,
     生成可打印的 PDF 图纸
     使用纯 PIL 实现 (无需额外依赖)
     """
-    from reportlab.lib.pagesizes import A4
-    from reportlab.pdfgen import canvas
-    from reportlab.lib.utils import ImageReader
+    try:
+        from reportlab.lib.pagesizes import A4
+        from reportlab.pdfgen import canvas
+        from reportlab.lib.utils import ImageReader
+        HAS_REPORTLAB = True
+    except ImportError:
+        HAS_REPORTLAB = False
 
     buf = io.BytesIO()
+
+    if not HAS_REPORTLAB:
+        # Fallback: 生成 PNG 并返回 PNG 数据
+        # 保存为 PNG 格式，当作 "PDF fallback"
+        img_2d.save(buf, format="PNG")
+        buf.seek(0)
+        return buf.getvalue()
+
     c = canvas.Canvas(buf, pagesize=A4)
     page_w, page_h = A4
     margin = 40
